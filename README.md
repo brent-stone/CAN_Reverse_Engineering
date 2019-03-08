@@ -1,4 +1,4 @@
-# CAN_Reverse_Engineering
+# Automated CAN Payload Reverse Engineering
 
 ## NOTICE
 > The views expressed in this document and code are those of the author and do not reflect the official policy or position of the United States Air Force, the United States Army, the United States Department of Defense or the United States Government. This material is declared a work of the U.S. Government and is not subject to copyright protection in the United States. Approval for public disclosure of this code was approved by the 88th Air Base Wing Public Affairs on 08 March 2019 under case number 88ABW-2019-0910. Unclassified disclosure of the dissertation was approved on 03 Janauary 2019 under case number 88ABW-2019-0024.
