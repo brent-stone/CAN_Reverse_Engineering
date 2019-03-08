@@ -1,0 +1,1 @@
+speed_xmap_rpm <- ccm(speed_brake_rpm, E = 9, random_libs = TRUE, lib_column = "speed", target_column = "rpm", lib_sizes = seq(5000, 15000, by = 5000), num_samples = 1000, num_neighbors = "E+1", tp = 0,  silent = TRUE)

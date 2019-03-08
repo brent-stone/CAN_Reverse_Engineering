@@ -1,0 +1,266 @@
+par() features
+mar
+A numerical vector of the form c(bottom, left, top, right) which gives the number of lines of margin to be specified on the four sides of the plot. The default is c(5, 4, 4, 2) + 0.1
+
+oma
+A vector of the form c(bottom, left, top, right) giving the size of the outer margins in lines of text.
+
+mgp
+The margin line (in mex units) for the axis title, axis labels and axis line. Note that mgp[1] affects title whereas mgp[2:3] affect axis. The default is c(3, 1, 0).
+
+
+library(rEDM)
+setwd("C:/Users/brent/Google Drive/AFIT/PhD Research/Validation/R/home")
+# CDN: setwd("C:/Users/bnolan/Google Drive/AFIT/PhD Research/Validation/R/home")
+speed_brake_rpm_throttle <- read.csv("speed_brake_rpm_throttle_home.csv")
+
+===============================================================================================================================================================================
+		1. Perform Simplex Projection to determine best embedding dimension
+===============================================================================================================================================================================
+
+ts_speed <- speed_brake_rpm_throttle$speed
+lib_speed <- c(1, 0.5*length(ts_speed))
+pred_speed <- c(0.5*length(ts_speed)+1, length(ts_speed))
+
+ts_rpm <- speed_brake_rpm_throttle$rpm
+lib_rpm <- c(1, 0.5*length(ts_rpm))
+pred_rpm <- c(0.5*length(ts_rpm)+1, length(ts_rpm))
+
+ts_brake <- speed_brake_rpm_throttle$brake
+lib_brake <- c(1, 0.5*length(ts_brake))
+pred_brake <- c(0.5*length(ts_brake)+1, length(ts_brake))
+
+ts_throttle <- speed_brake_rpm_throttle$throttle
+lib_throttle <- c(1, 0.5*length(ts_throttle))
+pred_throttle <- c(0.5*length(ts_throttle)+1, length(ts_throttle))
+
+simplex_output_throttle <- simplex(ts_throttle, lib_throttle, pred_throttle, silent = TRUE)
+simplex_output_speed <- simplex(ts_speed, lib_speed, pred_speed, silent = TRUE)
+simplex_output_rpm <- simplex(ts_rpm, lib_rpm, pred_rpm, silent = TRUE)
+simplex_output_brake <- simplex(ts_brake, lib_brake, pred_brake, silent = TRUE)
+
+save(simplex_output_throttle, file = "simplex_output_throttle.Rda")
+save(simplex_output_speed, file = "simplex_output_speed.Rda")
+save(simplex_output_rpm, file = "simplex_output_rpm.Rda")
+save(simplex_output_brake, file = "simplex_output_brake.Rda")
+
+
+# If instead you're loading previous calculations....
+load(file = "simplex_output_speed.Rda")
+load(file = "simplex_output_rpm.Rda")
+load(file = "simplex_output_brake.Rda")
+load(file = "simplex_output_throttle.Rda")
+
+# If you're running into std::bad_alloc memory issues, try using 1/2 of the data....
+ts_speed <- speed_brake_rpm_throttle$speed
+lib_speed <- c(1, 0.1*length(ts_speed))
+pred_speed <- c(0.1*length(ts_speed)+1, 0.2*length(ts_speed))
+
+ts_rpm <- speed_brake_rpm_throttle$rpm
+lib_rpm <- c(1, 0.1*length(ts_rpm))
+pred_rpm <- c(0.1*length(ts_rpm)+1, 0.2*length(ts_rpm))
+
+ts_brake <- speed_brake_rpm_throttle$brake
+lib_brake <- c(1, 0.1*length(ts_brake))
+pred_brake <- c(0.1*length(ts_brake)+1, 0.2*length(ts_brake))
+
+ts_throttle <- speed_brake_rpm_throttle$throttle
+lib_throttle <- c(1, 0.1*length(ts_throttle))
+pred_throttle <- c(0.1*length(ts_throttle)+1, 0.2*length(ts_throttle))
+
+===============================================================================================================================================================================
+		1a. Plot and Save the Embedding Results
+===============================================================================================================================================================================
+
+par(mar = c(4, 4, 1, 1), mgp = c(2.5, 1, 0)) # set margins for plotting
+
+# create a 1-row, 3-column plot matrix (pg. 260 of R-cookbook)
+par(mfrow=c(1,3), cex=1.5)
+
+plot(simplex_output_speed$E, simplex_output_speed$rho, type = "l", xlab = "Embedding Dimension (E)", ylab = expression(paste("Forecast Skill (", rho, ")")), main="Vehicle Speed")
+plot(simplex_output_rpm$E, simplex_output_rpm$rho, type = "l", xlab = "Embedding Dimension (E)", main="Engine RPM")
+plot(simplex_output_brake$E, simplex_output_brake$rho, type = "l", xlab = "Embedding Dimension (E)", main="Brake Pressure")
+
+
+# IF YOU WANT TO PLOT ALL THREE ON ONE LINE DIRECTLY TO A 5.5" x 2.5# PDF
+# mgp affects (axis label offset, axis number offeset, axis line offset). Resize the window in RStudio in order to resize the plot output when using the Export button.
+pdf(file = "simplex_embedding_one_row_home.pdf", width = 5.5, height = 1.5, family = "Helvetica")
+op <- par(mfrow = c(1,4), cex.axis=1, cex.lab=1, oma = c(3,3,0,0) + 0.1, mar = c(0,1,1,1) + 0.1, mgp=c(2, 1, 0))
+plot(simplex_output_speed$E, simplex_output_speed$rho, type = "l", axes = FALSE, main="Vehicle Speed", ylim = c(0.9995, 1.0), xlim = c(0, 10))
+axis(side = 1, labels = TRUE)
+axis(side = 2, at = c(0.9995, 1.0), labels = c(0.9995, 1.0))
+plot(simplex_output_rpm$E, simplex_output_rpm$rho, type = "l", axes = FALSE, main="Engine RPM", ylim = c(0.9995, 1.0), xlim = c(0, 10))
+axis(side = 1, labels = TRUE)
+axis(side = 2, at = c(0.9995, 1.0), labels = c(0.9995, 1.0))
+plot(simplex_output_brake$E, simplex_output_brake$rho, type = "l", axes = FALSE, main="Brake Pressure", ylim = c(0.95, 1), xlim = c(0, 10))
+axis(side = 1, labels = TRUE)
+axis(side = 2, at = c(0.95, 1), labels = c(0.95, 1))
+plot(simplex_output_throttle$E, simplex_output_throttle$rho, type = "l", axes = FALSE, main="Throttle Pressure", ylim = c(0.992, 1), xlim = c(0, 10))
+axis(side = 1, labels = TRUE)
+axis(side = 2, at = c(0.992, 1), labels = c(0.992, 1))
+title(xlab = "Embedding Dimension (E)", ylab = "Forecast Skill (rho)", outer = TRUE)
+par(op)
+dev.off()
+
+===============================================================================================================================================================================
+		2. Re-run Simplex Projection with Optimal E to determine whether chaotic noise appears (Rho drops quickly with respect to increased tp)
+===============================================================================================================================================================================
+
+# Be sure to reload simplex_output_X using the E=9 computations before the next round of plots
+simplex_output_speed <- simplex(ts_speed, lib_speed, pred_speed, E = 9, tp = 1:1000)
+save(simplex_output_speed, file = "simplex_output_speed_E_9_tp_1-1000.Rda")
+
+simplex_output_rpm <- simplex(ts_rpm, lib_rpm, pred_rpm, E = 9, tp = 1:1000)
+save(simplex_output_rpm, file = "simplex_output_rpm_E_9_tp_1-1000.Rda")
+
+simplex_output_brake <- simplex(ts_brake, lib_brake, pred_brake, E = 9, tp = 1:1000)
+save(simplex_output_brake, file = "simplex_output_brake_E_9_tp_1-1000.Rda")
+
+# If instead you're loading previous calculations....
+load(file = "simplex_output_speed_E_9_tp_1-1000.Rda")
+load(file = "simplex_output_rpm_E_9_tp_1-1000.Rda")
+load(file = "simplex_output_brake_E_9_tp_1-1000.Rda")
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+pdf(file = "simplex_forecasting_one_row_city.pdf", width = 5.5, height = 1.5, family = "Helvetica")
+op <- par(mfrow = c(1,3), cex.axis=1, cex.lab=1, oma = c(3,3,0,0) + 0.1, mar = c(0,1,1,1) + 0.1, mgp=c(2, 1, 0))
+plot(simplex_output_speed$tp, pmax(0, simplex_output_speed$rho), type = "l", axes = FALSE, main="Vehicle Speed", ylim = c(0, 1.0))
+axis(side = 1, labels = TRUE)
+axis(side = 2, at = c(0, 0.5, 1.0), labels = c(0, 0.5, 1.0))
+plot(simplex_output_rpm$tp, pmax(0, simplex_output_rpm$rho), type = "l", axes = FALSE, main="Engine RPM", ylim = c(0, 1.0))
+axis(side = 1, labels = TRUE)
+axis(side = 2, at = c(0, 0.5, 1.0), labels = c(0, 0.5, 1.0))
+plot(simplex_output_brake$tp, pmax(0, simplex_output_brake$rho), type = "l", axes = FALSE, main="Brake Pressure", ylim = c(0, 1.0))
+axis(side = 1, labels = TRUE)
+axis(side = 2, at = c(0, 0.5, 1.0), labels = c(0, 0.5, 1.0))
+title(xlab = "Time to Prediction (tp)", ylab = "Forecast Skill (rho)", outer = TRUE)
+par(op)
+dev.off()
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+===============================================================================================================================================================================
+					2. Distinguish between red noise and nonlinear deterministic behavior using S-maps
+===============================================================================================================================================================================
+
+smap_output_speed <- s_map(ts_speed, lib_speed, pred_speed, E = 9, silent = TRUE)
+save(smap_output_speed, file = "smap_output_speed.Rda")
+smap_output_rpm <- s_map(ts_rpm, lib_rpm, pred_rpm, E = 9, silent = TRUE)
+save(smap_output_rpm, file = "smap_output_rpm.Rda")
+smap_output_brake <- s_map(ts_brake, lib_brake, pred_brake, E = 9, silent = TRUE)
+save(smap_output_brake, file = "smap_output_brake.Rda")
+smap_output_throttle <- s_map(ts_throttle, lib_throttle, pred_throttle, E = 9, silent = TRUE)
+save(smap_output_throttle, file = "smap_output_throttle.Rda")
+
+
+load(file = "smap_output_rpm.Rda")
+load(file = "smap_output_speed.Rda")
+load(file = "smap_output_brake.Rda")
+load(file = "smap_output_throttle.Rda")
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+pdf(file = "smap_one_row_city.pdf", width = 5.5, height = 1.5, family = "Helvetica")
+op <- par(mfrow = c(1,3), cex.axis=1, cex.lab=1, oma = c(3,3,1,0) + 0.1, mar = c(0,1,1,1) + 0.1, mgp=c(2, 1, 0))
+plot(smap_output_speed$theta, smap_output_speed$rho, type = "l", axes = FALSE, main="Vehicle Speed", xlim=c(0,8), ylim = c(0.99997, 0.999975))
+axis(side = 1, labels = TRUE)
+axis(side = 2, at = c(0.99997,0.999975), labels = c(0.99997,0.999975))
+plot(smap_output_rpm$theta, smap_output_rpm$rho, type = "l", axes = FALSE, main="Engine RPM", xlim=c(0,8), ylim = c(0.999931, 0.999937))
+axis(side = 1, labels = TRUE)
+axis(side = 2, at = c(0.999931,0.999937), labels = c(0.999931,0.999937))
+plot(smap_output_brake$theta, smap_output_brake$rho, type = "l", axes = FALSE, main="Brake Pressure", xlim=c(0,8), ylim = c(0.986, 0.9885))
+axis(side = 1, labels = TRUE)
+axis(side = 2, at = c(0.986, 0.986, 0.9885), labels = c(0.986, 0.986, 0.9885))
+title(xlab = "Nonlinear Tuning Parameter (theta)", ylab = "Forecast Skill (rho)", outer = TRUE)
+par(op)
+dev.off()
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# To do individual plots
+plot(smap_output_speed$theta, smap_output_speed$rho, type = "l", xlab = "Nonlinearity (theta)", ylab = expression(paste("Forecast Skill (", rho, ")")), xlim=c(0,8), ylim=c(0.9999912,0.9999931))
+title(main = "S-Map Forecast Skill For Vehicle Speed")
+plot(smap_output_brake$theta, smap_output_brake$rho, type = "l", xlab = "Nonlinearity (theta)", ylab = expression(paste("Forecast Skill (", rho, ")")), xlim=c(0,8), ylim=c(0.99693,0.99696))
+title(main = "S-Map Forecast Skill For Brake Pressure")
+plot(smap_output_rpm$theta, smap_output_rpm$rho, type = "l", xlab = "Nonlinearity (theta)", ylab = expression(paste("Forecast Skill (", rho, ")")), xlim=c(0,8), ylim=c(0.9999842,0.9999857))
+title(main = "S-Map Forecast Skill For Engine Rotations Per Minute")
+
+
+===============================================================================================================================================================================
+					3. Perform Convergent Cross Mapping Between Variables Using Optimal Embedding Dimension E
+===============================================================================================================================================================================
+
+# num_samples = 10, lib_sizes = seq(0, 15000, by = 3000) causes 10 models at each of the 5 library sizes
+speed_xmap_rpm <- ccm(speed_brake_rpm_throttle, lib_column = "speed", target_column = "rpm", E = 9, lib_sizes = seq(0, 15000, by = 3000), num_samples = 10, random_libs = TRUE, replace = TRUE, num_neighbors = "E+1", tp = 0, silent = TRUE)
+save(speed_xmap_rpm, file = "speed_xmap_rpm.Rda")
+speed_xmap_brake <- ccm(speed_brake_rpm_throttle, lib_column = "speed", target_column = "brake", E = 9, lib_sizes = seq(0, 90000, by = 3000), num_samples = 10, random_libs = TRUE, replace = TRUE, num_neighbors = "E+1", tp = 0, silent = TRUE)
+save(speed_xmap_brake, file = "speed_xmap_brake.Rda")
+
+brake_xmap_rpm <- ccm(speed_brake_rpm_throttle, lib_column = "brake", target_column = "rpm", E = 9, lib_sizes = seq(0, 90000, by = 3000), num_samples = 10, random_libs = TRUE, replace = TRUE, num_neighbors = "E+1", tp = 0, silent = TRUE)
+save(brake_xmap_rpm, file = "brake_xmap_rpm.Rda")
+brake_xmap_speed <- ccm(speed_brake_rpm_throttle, lib_column = "brake", target_column = "speed", E = 9, lib_sizes = seq(0, 90000, by = 3000), num_samples = 10, random_libs = TRUE, replace = TRUE, num_neighbors = "E+1", tp = 0, silent = TRUE)
+save(brake_xmap_speed, file = "brake_xmap_speed.Rda")
+
+rpm_xmap_speed <- ccm(speed_brake_rpm_throttle, lib_column = "rpm", target_column = "speed", E = 9, lib_sizes = seq(0, 90000, by = 3000), num_samples = 10, random_libs = TRUE, replace = TRUE, num_neighbors = "E+1", tp = 0,  silent = TRUE)
+save(rpm_xmap_speed, file = "rpm_xmap_speed.Rda")
+rpm_xmap_brake <- ccm(speed_brake_rpm_throttle, lib_column = "rpm", target_column = "brake", E = 9, lib_sizes = seq(0, 90000, by = 3000), num_samples = 10, random_libs = TRUE, replace = TRUE, num_neighbors = "E+1", tp = 0,  silent = TRUE)
+save(rpm_xmap_brake, file = "rpm_xmap_brake.Rda")
+
+# X xmap Y: causal effect of (pred) Y onto (lib) X
+
+load(file = "speed_xmap_rpm.Rda")
+load(file = "speed_xmap_brake.Rda")
+load(file = "brake_xmap_rpm.Rda")
+load(file = "brake_xmap_speed.Rda")
+load(file = "rpm_xmap_speed.Rda")
+load(file = "rpm_xmap_brake.Rda")
+
+speed_xmap_rpm_mean <- ccm_means(speed_xmap_rpm)
+speed_xmap_brake_mean <- ccm_means(speed_xmap_brake)
+
+brake_xmap_rpm_mean <- ccm_means(brake_xmap_rpm)
+brake_xmap_speed_mean <- ccm_means(brake_xmap_speed)
+
+rpm_xmap_speed_mean <- ccm_means(rpm_xmap_speed)
+rpm_xmap_brake_mean <- ccm_means(rpm_xmap_brake)
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+pdf(file = "ccm_one_row_city.pdf", width = 5.5, height = 2.0, family = "Helvetica")
+op <- par(mfrow = c(1,3), cex.axis=1, cex.lab=1, oma = c(3,3,1,0) + 0.1, mar = c(0,1,1,1) + 0.1, mgp=c(2, 1, 0))
+
+plot(speed_xmap_rpm_mean$lib_size, pmax(0, speed_xmap_rpm_mean$rho), type = "l", col = "red", axes = FALSE, main="Speed & RPM", xlim = c(3000, 15000), ylim = c(.5, .8))
+lines(rpm_xmap_speed_mean$lib_size, pmax(0, rpm_xmap_speed_mean$rho), col = "blue")
+legend(x = "right", legend = c("S xmap R", "R xmap S"), col = c("red", "blue"), lwd = 1, bty = "n", inset = 0.02, cex = 1, y.intersp = 1)
+axis(side = 1, at = c(3000, 9000, 15000), labels = c("3k", "9k", "15k"))
+axis(side = 2, labels = TRUE)
+
+plot(brake_xmap_rpm_mean$lib_size, pmax(0, brake_xmap_rpm_mean$rho), type = "l", col = "red", axes = FALSE, main="Brake & RPM", xlim = c(3000, 15000), ylim = c(.1, .3))
+lines(rpm_xmap_brake_mean$lib_size, pmax(0, rpm_xmap_brake_mean$rho), col = "blue")
+legend(x = "topright", legend = c("B xmap R", "R xmap B"), col = c("red", "blue"), lwd = 1, bty = "n", inset = 0.02, cex = 1, y.intersp = 1)
+axis(side = 1, at = c(3000, 9000, 15000), labels = c("3k", "9k", "15k"))
+axis(side = 2, labels = TRUE)
+
+plot(speed_xmap_brake_mean$lib_size, pmax(0, speed_xmap_brake_mean$rho), type = "l", col = "red", axes = FALSE, main="Speed & Brake", xlim = c(3000, 15000), ylim = c(.45, .6))
+lines(brake_xmap_speed_mean$lib_size, pmax(0, brake_xmap_speed_mean$rho), col = "blue")
+legend(x = "topright", legend = c("S xmap B", "B xmap S"), col = c("red", "blue"), lwd = 1, bty = "n", inset = 0.02, cex = 1, y.intersp = 1)
+axis(side = 1, at = c(3000, 9000, 15000), labels = c("3k", "9k", "15k"))
+axis(side = 2, labels = TRUE)
+
+title(xlab = "Library Size", ylab = "Cross Map Skill (rho)", outer = TRUE)
+par(op)
+dev.off()
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+plot(speed_xmap_rpm_mean$lib_size, pmax(0, speed_xmap_rpm_mean$rho), type = "l", col = "red", xlab = "Library Size", ylab = expression(paste("Cross Map Skill (", rho, ")")), ylim = c(0.86, 0.95))
+lines(rpm_xmap_speed_mean$lib_size, pmax(0, rpm_xmap_speed_mean$rho), col = "blue")
+legend(x = "topleft", legend = c("Speed xmap Engine RPM", "Engine RPM xmap Speed"), col = c("red", "blue"), lwd = 1, bty = "n", inset = 0.02, cex = 1, y.intersp = 2)
+title(main = "Cross Map Skill Between Speed and Engine RPM")
+
+plot(brake_xmap_rpm_mean$lib_size, pmax(0, brake_xmap_rpm_mean$rho), type = "l", col = "red", xlab = "Library Size", ylab = expression(paste("Cross Map Skill (", rho, ")")), ylim = c(0.35, 0.48))
+lines(rpm_xmap_brake_mean$lib_size, pmax(0, rpm_xmap_brake_mean$rho), col = "blue")
+legend(x = "left", legend = c("Brake Pressure xmap Engine RPM", "Engine RPM xmap Brake Pressure"), col = c("red", "blue"), lwd = 1, bty = "n", inset = 0.02, cex = 1, y.intersp = 2)
+title(main = "Cross Map Skill Between Brake Pressure and Engine RPM")
+
+plot(speed_xmap_brake_mean$lib_size, pmax(0, speed_xmap_brake_mean$rho), type = "l", col = "red", xlab = "Library Size", ylab = expression(paste("Cross Map Skill (", rho, ")")), ylim = c(0.6, 0.9))
+lines(brake_xmap_speed_mean$lib_size, pmax(0, brake_xmap_speed_mean$rho), col = "blue")
+legend(x = "left", legend = c("Speed xmap Brake Pressure", "Brake Pressure xmap Speed"), col = c("red", "blue"), lwd = 1, bty = "n", inset = 0.02, cex = 1, y.intersp = 2)
+title(main = "Cross Map Skill Between Speed and Brake Pressure")
