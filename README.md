@@ -1,25 +1,25 @@
 # Automated CAN Payload Reverse Engineering
 
 ## NOTICE
-> The views expressed in this document and code are those of the author and do not reflect the official policy or position of the United States Air Force, the United States Army, the United States Department of Defense or the United States Government. This material is declared a work of the U.S. Government and is not subject to copyright protection in the United States. Approval for public disclosure of this code was approved by the 88th Air Base Wing Public Affairs on 08 March 2019 under case number 88ABW-2019-0910. Unclassified disclosure of the dissertation was approved on 03 Janauary 2019 under case number 88ABW-2019-0024.
+> The views expressed in this document and code are those of the author and do not reflect the official policy or position of the United States Air Force, the United States Army, the United States Department of Defense or the United States Government. This material is declared a work of the U.S. Government and is not subject to copyright protection in the United States. Approval for public disclosure of this code was approved by the 88th Air Base Wing Public Affairs on 08 March 2019 under case number 88ABW-2019-0910. Unclassified disclosure of the dissertation was approved on 03 January 2019 under case number 88ABW-2019-0024.
 -----------------------------------------------------------------------------------------
 
-This project houses Python and R scripts intended to facilitate the automated reverse engineering of Controller Area Network (CAN) payloads observed from passenger vehicles. This code was originally developed by Dr. Brent Stone at the Air Force Institute of Technology in pursuit of a Doctor of Philosophy in Computer Science. Please see the included dissertation titled "Enabling Auditing and Intrusion Detection for Proprietary Conntroller Area Networks" for details about the methods used. Please open an issue letting me know if you find any typos, bad grammar, your copyrighted images you want removed, or other issues!
+This project houses Python and R scripts intended to facilitate the automated reverse engineering of Controller Area Network (CAN) payloads observed from passenger vehicles. This code was originally developed by Dr. Brent Stone at the Air Force Institute of Technology in pursuit of a Doctor of Philosophy in Computer Science. Please see the included dissertation titled "Enabling Auditing and Intrusion Detection for Proprietary Controller Area Networks" for details about the methods used. Please open an issue letting me know if you find any typos, bad grammar, your copyrighted images you want removed, or other issues!
 
 Special thank you to Dave Blundell, co-author of the Car Hacker's Handbook, and the Open Garages community for technical advice and serving as a sounding board.
 
 ## Tips and Advice
-These scripts won't run immediately when cloning this repo. Hopefully these tips will save you time and frustation saying "WHY WONT THESE THINGS WORK!?!?!" Please ask questions by posting in the [Open Garages Google group](https://groups.google.com/forum/#!forum/open-garages).
+These scripts won't run immediately when cloning this repo. Hopefully these tips will save you time and frustration saying "WHY WONT THESE THINGS WORK!?!?!" Please ask questions by posting in the [Open Garages Google group](https://groups.google.com/forum/#!forum/open-garages).
 
 
-The files are organized with an example CAN data sample and three folders. Each folder is a self-contained set of interdepenent Python classes or R scripts for examining CAN data in the format shown in the example LoggerProgram0.log. Different file formats can be used by adjusting PreProcessor.py accordingly.
+The files are organized with an example CAN data sample and three folders. Each folder is a self-contained set of interdependent Python classes or R scripts for examining CAN data in the format shown in the example LoggerProgram0.log. Different file formats can be used by adjusting PreProcessor.py accordingly.
 
 * Folder 1: **Pipeline**
   * This is the most basic implementation of the pipeline described in the dissertation. Over 80% of the code is referenced from home.py. Follow the calls made in home.py to see how the data are sequentially processed and saved to disk.
   * The remaining 20% is unused portions of code which were left in place to either serve as a reference for different ways of doing things in Python or interesting experiments which were worth preserving (like the Smith-Waterman search).
 
 * Folder 2: **Pipeline_multi-file**
-  * This is the most complete and robust implementation of the concepts presented in the disseration; however, the code is also more complicated to enable automated processing of many CAN data samples at one time. If you aren't already very comfortable with Python and Pandas, make sure you understand how the scripts in the **Pipeline** folder work before attempting to go through this expanded version of the code.
+  * This is the most complete and robust implementation of the concepts presented in the dissertation; however, the code is also more complicated to enable automated processing of many CAN data samples at one time. If you aren't already very comfortable with Python and Pandas, make sure you understand how the scripts in the **Pipeline** folder work before attempting to go through this expanded version of the code.
 
   * This folder includes the same classes from **Pipeline**. However, **SOME BUGS WERE FIXED HERE** but **NOT** in the classes saved in **Pipeline**. If a generous soul wants to transplant the fixes back into **Pipeline**, I will happily merge the fork.
 
@@ -50,7 +50,7 @@ The files are organized with an example CAN data sample and three folders. Each 
 **Output**: This series of scripts produces an array of output depending on the global variables defined in **Main.py**. This output may include the following:
 *	‘Pickle’ files of the runtime dictionary and Data Frame objects using the open source Pickle library for Python. These files simply speed up repeated execution of the Python scripts when the same .log file is used for input to **Main.py**.
 * Comma separated value (.csv) plain text files of the correlation matrix between time series data present in the .log file.
-* Graphics of scatterplots of the time series present in the .log file.
+* Graphics of scatter-plots of the time series present in the .log file.
 * A graphic of the dendrogram produced during Hierarchical Clustering in **SemanticAnalysis.py**. A dendrogram is a well-documented method for visualizing the results of Hierarchical Clustering algorithms.
 
 
@@ -71,6 +71,7 @@ The files are organized with an example CAN data sample and three folders. Each 
 **Input**: Plain-text .csv files containing time series data such as those included in this folder. 
 * **commands_list.txt, commands_list_city.txt, commands_list_home.txt**
   1. **Purpose**: This is a list of R commands for the publically available rEDM package. The intent is to perform analysis of the time series according to the rEDM user guide. Each version is highly similar and customized only to point to a different .csv file for input and .pdf file to visualize the output.
+
 
 **Output**:
 * .Rda files
