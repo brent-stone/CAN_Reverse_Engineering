@@ -9,12 +9,13 @@ This project houses Python and R scripts intended to facilitate the automated re
 Special thank you to Dave Blundell, co-author of the Car Hacker's Handbook, and the Open Garages community for technical advice and serving as a sounding board.
 
 ## Tips and Advice
-These scripts won't run immediately when cloning this repo. Hopefully these tips will save you time and frustration saying "WHY WONT THESE THINGS WORK!?!?!" Please ask questions by posting in the [Open Garages Google group](https://groups.google.com/forum/#!forum/open-garages).
+These scripts won't run immediately when cloning this repo. Hopefully these tips will save you time and frustration saying "WHY WONT THESE THINGS WORK!?!?!" Please ask questions by posting in the [Open Garages Google group](https://groups.google.com/forum/#!forum/open-garages). These scripts were developed and tested using Python 3.6. Please make sure you have the Numpy, Pandas, & scikit-learn packages available to your Python Interpreter.
 
 
 The files are organized with an example CAN data sample and three folders. Each folder is a self-contained set of interdependent Python classes or R scripts for examining CAN data in the format shown in the example LoggerProgram0.log. Different file formats can be used by adjusting PreProcessor.py accordingly.
 
 * Folder 1: **Pipeline**
+  * Simply copy LoggerProgram0.log into this folder and run homy.py.
   * This is the most basic implementation of the pipeline described in the dissertation. Over 80% of the code is referenced from home.py. Follow the calls made in home.py to see how the data are sequentially processed and saved to disk.
   * The remaining 20% is unused portions of code which were left in place to either serve as a reference for different ways of doing things in Python or interesting experiments which were worth preserving (like the Smith-Waterman search).
 
