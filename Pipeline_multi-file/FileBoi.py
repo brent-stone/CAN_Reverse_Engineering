@@ -64,7 +64,7 @@ class FileBoi:
                             sample_dict[(make, model, year)] = []
                         this_sample_index = str(len(sample_dict[(make, model, year)]))
                         this_sample = Sample(make=make, model=model, year=year, sample_index=this_sample_index,
-                                             sample_path=dirName + "\\" + m.group(0), kfold_n=kfold_n)
+                                             sample_path=dirName + "/" + m.group(0), kfold_n=kfold_n)
                         sample_dict[(make, model, year)].append(this_sample)
                 current_vehicle = []
             else:
