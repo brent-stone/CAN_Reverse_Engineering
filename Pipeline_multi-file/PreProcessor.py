@@ -1,4 +1,4 @@
-from pandas import DataFrame, read_csv, Series, concat
+from pandas import DataFrame, read_csv, Series
 from numpy import int64
 from os import path, remove, getcwd
 from pickle import load
@@ -45,7 +45,7 @@ class PreProcessor:
                              header=None,
                              names=['time', 'id', 'dlc', 'b0', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7'],
                              skiprows=7,
-                             delimiter=' ',
+                             delimiter='\t',
                              converters=convert_dict,
                              index_col=0)
 
@@ -70,7 +70,6 @@ class PreProcessor:
                                    time_conversion:             int = 1000,
                                    freq_analysis_accuracy:      float = 0.0,
                                    freq_synchronous_threshold:  float = 0.0,
-                                   given_arb_id:                int = 0,
                                    force:                       bool = False) -> (dict, dict):
         id_dictionary = {}
         j1979_dictionary = {}
@@ -93,11 +92,6 @@ class PreProcessor:
             return id_dictionary, j1979_dictionary
         else:
             self.import_csv(a_timer, self.data_filename)
-            this_id = self.data.loc[self.data['id'] == given_arb_id].copy()
-            this_id.id = given_arb_id * 256
-
-            combined = concat([self.data, this_id])
-            self.data = combined
 
         a_timer.start_function_time()
 

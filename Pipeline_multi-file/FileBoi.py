@@ -60,14 +60,13 @@ class FileBoi:
                     # Check if this file name matches the expected name for a CAN data sample. If so, create new Sample
                     m = re.match('loggerProgram[\d]+.log', file)
                     if m:
-                        i = 0
                         if not (make, model, year) in sample_dict:
                             sample_dict[(make, model, year)] = []
                         this_sample_index = str(len(sample_dict[(make, model, year)]))
                         this_sample = Sample(make=make, model=model, year=year, sample_index=this_sample_index,
-                                            sample_path=dirName + "/" + m.group(0), kfold_n=kfold_n)
+                                             sample_path=dirName + "/" + m.group(0), kfold_n=kfold_n)
                         sample_dict[(make, model, year)].append(this_sample)
-                    current_vehicle = []
+                current_vehicle = []
             else:
                 if this_dir == "Captures":
                     continue

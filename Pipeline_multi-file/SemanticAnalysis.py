@@ -1,5 +1,5 @@
 from pandas import concat, DataFrame, read_csv
-from numpy import ndarray, zeros, clip
+from numpy import ndarray, zeros
 from os import path, remove
 from pickle import load, dump
 from ast import literal_eval
@@ -77,7 +77,7 @@ def signal_clustering(corr_matrix:      DataFrame,
     corr_matrix.where(corr_matrix > 0, 0, inplace=True)
     corr_matrix = 1 - corr_matrix
     X = corr_matrix.values  # type: ndarray
-    Y = clip(ssd.squareform(X), 0, None)
+    Y = ssd.squareform(X)
     # Z is the linkage matrix. This can serve as input to the scipy.cluster.hierarchy.dendrogram method
     Z = linkage(Y, method='single', optimal_ordering=True)
     fclus = fcluster(Z, t=threshold, criterion='distance')

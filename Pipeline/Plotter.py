@@ -16,10 +16,7 @@ cluster_folder: str = 'clusters'
 j1979_folder:   str = 'j1979'
 
 
-def plot_signals_by_arb_id(a_timer: PipelineTimer, arb_id_dict: dict, signal_dict: dict, settings: int, force: bool = False):
-    arb_id_folder = 'figures' + str(settings)
-
-
+def plot_signals_by_arb_id(a_timer: PipelineTimer, arb_id_dict: dict, signal_dict: dict, force: bool=False):
     if path.exists(arb_id_folder):
         if force:
             rmtree(arb_id_folder)
@@ -32,7 +29,7 @@ def plot_signals_by_arb_id(a_timer: PipelineTimer, arb_id_dict: dict, signal_dic
     for k_id, signals in signal_dict.items():
         arb_id = arb_id_dict[k_id]
         if not arb_id.static:
-            print(str(settings) + "Plotting Arb ID " + str(k_id) + " (" + str(hex(k_id)) + ")")
+            print("Plotting Arb ID " + str(k_id) + " (" + str(hex(k_id)) + ")")
             a_timer.start_iteration_time()
 
             signals_to_plot = []
@@ -102,9 +99,7 @@ def plot_signals_by_cluster(a_timer: PipelineTimer,
                             cluster_dict: dict,
                             signal_dict: dict,
                             use_j1979_tags: bool,
-                            settings: int,
                             force: bool=False):
-    cluster_folder = 'cluster' + str(settings)
     if path.exists(cluster_folder):
         if force:
             rmtree(cluster_folder)
