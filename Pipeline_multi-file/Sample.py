@@ -2,7 +2,7 @@ from PreProcessor import PreProcessor
 from Validator import Validator
 from LexicalAnalysis import tokenize_dictionary, generate_signals
 from SemanticAnalysis import generate_correlation_matrix, signal_clustering, j1979_signal_labeling
-from Plotter import plot_j1979, plot_signals_by_arb_id, plot_signals_by_cluster, plot_dendrogram
+from Plotter import plot_j1979, plot_signals_by_arb_id, plot_signals_by_cluster, plot_dendrogram, plot_known_signal_cluster
 from sklearn.preprocessing import minmax_scale
 from typing import Callable
 from PipelineTimer import PipelineTimer
@@ -10,6 +10,8 @@ from os import chdir, mkdir, path, remove
 from pickle import dump, load
 from numpy import ndarray, zeros, float16
 from pandas import DataFrame
+
+from KnownSignalAnalysis import transform_signals, transform_signal
 
 # File names for the on-disc data input and output.
 output_folder:              str = 'output'
@@ -26,6 +28,8 @@ pickle_combined_df_filename: str = 'pickleCombinedDataFrame.p'
 csv_all_signals_filename:   str = 'complete_correlation_matrix.csv'
 pickle_timer_filename:      str = 'pickleTimer.p'
 
+pickle_transform_filename:  str = 'pickleTransform'
+
 dump_to_pickle:             bool = True
 
 # Change out the normalization strategies as needed.
@@ -39,9 +43,11 @@ force_threshold_plotting:   bool = False
 force_j1979_plotting:       bool = True
 use_j1979:                  bool = True
 
+force_transform:            bool = False
+
 force_lexical_analysis:     bool = False
 force_signal_generation:    bool = False
-force_arb_id_plotting:      bool = True
+force_arb_id_plotting:      bool = False
 
 force_correlation_matrix:   bool = False
 force_clustering:           bool = False
@@ -58,15 +64,14 @@ freq_synchronous_threshold = 0.1
 
 # Threshold parameters used during lexical analysis.
 tokenization_bit_distance:  float = 0.2
-tokenize_padding:           bool = True
+tokenize_padding:           bool = False  # changing this to false seems to help better find weak signals
 merge_tokens:               bool = True
 
 # Threshold parameters used during semantic analysis
 subset_selection_size:      float = 0.25
-max_intra_cluster_distance: float = 0.20
+max_intra_cluster_distance: float = 0.10  # normally 0.25
 min_j1979_correlation:      float = 0.85
 # fuzzy_labeling:             bool = True
-
 
 # A timer class to record timings throughout the pipeline.
 a_timer = PipelineTimer(verbose=True)
@@ -112,7 +117,7 @@ class Sample:
         # Move back to root of './output/make_model_year/sample_index/"
         chdir("../../../")
 
-    def pre_process(self):
+    def pre_process(self, given_arb_id):
         self.make_and_move_to_vehicle_directory()
         pre_processor = PreProcessor(self.path, pickle_arb_id_filename, pickle_j1979_filename, self.use_j1979)
         id_dictionary, j1979_dictionary = pre_processor.generate_arb_id_dictionary(a_timer,
@@ -120,6 +125,7 @@ class Sample:
                                                                                    time_conversion,
                                                                                    freq_analysis_accuracy,
                                                                                    freq_synchronous_threshold,
+                                                                                   given_arb_id,
                                                                                    force_pre_processing)
         if dump_to_pickle:
             if force_pre_processing:
@@ -302,4 +308,38 @@ class Sample:
         self.make_and_move_to_vehicle_directory()
         plot_dendrogram(a_timer=a_timer, linkage_matrix=linkage_matrix, threshold=self.max_inter_cluster_dist,
                         vehicle_number=vehicle_number, force=force_dendrogram_plotting)
+        self.move_back_to_parent_directory()
+
+    def transform_signals(self, id_dictionary: dict):
+        self.make_and_move_to_vehicle_directory()
+        transform_dict = transform_signals(a_timer=a_timer,
+                                           arb_id_dict=id_dictionary,
+                                           transform_pickle_filename=pickle_transform_filename,
+                                           normalize_strategy=signal_normalize_strategy,
+                                           force=force_transform)
+        self.move_back_to_parent_directory()
+        return transform_dict
+
+    def transform_signal(self, id_dictionary: dict, signal_dict: dict, arb_id: int):
+        self.make_and_move_to_vehicle_directory()
+        transform_dict = transform_signal(a_timer=a_timer,
+                                          arb_id_dict=id_dictionary,
+                                          signal_dict=signal_dict,
+                                          transform_pickle_filename=pickle_transform_filename,
+                                          normalize_strategy=signal_normalize_strategy,
+                                          given_arb_id=arb_id,
+                                          force=force_transform)
+        self.move_back_to_parent_directory()
+        return transform_dict
+
+    def plot_known_signal_cluster(self, cluster_dictionary: dict, signal_dictionary: dict, use_j1979_tags: bool,
+                      known_signal: int, vehicle_number: str):
+        self.make_and_move_to_vehicle_directory()
+        plot_known_signal_cluster(a_timer=a_timer,
+                                cluster_dict=cluster_dictionary,
+                                signal_dict=signal_dictionary,
+                                use_j1979_tags=use_j1979_tags,
+                                vehicle_number=vehicle_number,
+                                given_arb_id=known_signal,
+                                force=force_cluster_plotting)
         self.move_back_to_parent_directory()
