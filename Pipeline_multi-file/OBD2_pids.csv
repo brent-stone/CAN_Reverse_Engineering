@@ -1,0 +1,55 @@
+﻿4,Calculated engine load,A / 2.55
+5,Engine coolant temperature,A - 40
+6,Short term fuel trim—Bank 1,(A / 1.28) - 100
+7,Long term fuel trim—Bank 1,(A / 1.28) - 100
+8,Short term fuel trim—Bank 2,(A / 1.28) - 100
+9,Long term fuel trim—Bank 2,(A / 1.28) - 100
+10,Fuel pressure (gauge pressure),3 * A
+11,Intake manifold absolute pressure,A
+12,Engine RPM,((256 * A) + B)/4
+13,Vehicle speed,A
+14,Timing advance,(A / 2) - 64
+15,Intake air temperature,A - 40
+16,MAF air flow rate,((256 * A) + B)/100
+17,Throttle position,A / 2.55
+31,Run time since engine start,(256 * A) + B
+33,Distance traveled with malfunction indicator lamp (MIL) on,(256 * A) + B
+34,Fuel Rail Pressure (relative to manifold vacuum),0.079 * ((256 * A) + B)
+35,"Fuel Rail Gauge Pressure (diesel, or gasoline direct injection)",10 * ((256 * A) + B)
+44,Commanded EGR,A / 2.55
+45,EGR Error,(1.28 * A) - 100
+46,Commanded evaporative purge,A / 2.55
+47,Fuel Tank Level Input,A / 2.55
+48,Warm-ups since codes cleared,A
+49,Distance traveled since codes cleared,(256 * A) + B
+51,Absolute Barometric Pressure,A
+60,"Catalyst Temperature: Bank 1, Sensor 1",(((256 * A) + B) / 10) - 40
+61,"Catalyst Temperature: Bank 2, Sensor 1",(((256 * A) + B) / 10) - 40
+62,"Catalyst Temperature: Bank 1, Sensor 2",(((256 * A) + B) / 10) - 40
+63,"Catalyst Temperature: Bank 2, Sensor 2",(((256 * A) + B) / 10) - 40
+66,Control module voltage,((256 * A) + B) / 1000
+67,Absolute load value,((256 * A) + B) / 2.55
+68,Fuel–Air commanded equivalence ratio,"(1 / 32,768) * ((256 * A) + B)"
+69,Relative throttle position,A / 2.55
+70,Ambient air temperature,A - 40
+71,Absolute throttle position B,A / 2.55
+72,Absolute throttle position C,A / 2.55
+73,Accelerator pedal position D,A / 2.55
+74,Accelerator pedal position E,A / 2.55
+75,Accelerator pedal position F,A / 2.55
+76,Commanded throttle actuator,A / 2.55
+77,Time run with MIL on,(256 * A) + B
+78,Time since trouble codes cleared,(256 * A) + B
+80,Maximum value for air flow rate from mass air flow sensor,A * 10
+82,Ethanol fuel %,A / 2.55
+83,Absolute Evap system Vapor Pressure,((256 * A) + B) / 200
+84,Evap system vapor pressure,((256 * A) + B) - 32767
+89,Fuel rail absolute pressure,10 * ((256 * A) + B)
+90,Relative accelerator pedal position,A / 2.55
+91,Hybrid battery pack remaining life,A / 2.55
+92,Engine oil temperature,A - 40
+93,Fuel injection timing,(((256 * A) + B) / 128) - 210
+94,Engine fuel rate,((256 * A) + B) / 20
+97,Driver's demand engine - percent torque,A - 125
+98,Actual engine - percent torque,A - 125
+99,Engine reference torque,(256 * A) + B
