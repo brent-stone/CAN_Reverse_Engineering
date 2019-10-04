@@ -15,7 +15,7 @@
 31,Run time since engine start,(256 * A) + B
 33,Distance traveled with malfunction indicator lamp (MIL) on,(256 * A) + B
 34,Fuel Rail Pressure (relative to manifold vacuum),0.079 * ((256 * A) + B)
-35,"Fuel Rail Gauge Pressure (diesel, or gasoline direct injection)",10 * ((256 * A) + B)
+35,Fuel Rail Gauge Pressure (diesel, or gasoline direct injection),10 * ((256 * A) + B)
 44,Commanded EGR,A / 2.55
 45,EGR Error,(1.28 * A) - 100
 46,Commanded evaporative purge,A / 2.55
@@ -23,13 +23,13 @@
 48,Warm-ups since codes cleared,A
 49,Distance traveled since codes cleared,(256 * A) + B
 51,Absolute Barometric Pressure,A
-60,"Catalyst Temperature: Bank 1, Sensor 1",(((256 * A) + B) / 10) - 40
-61,"Catalyst Temperature: Bank 2, Sensor 1",(((256 * A) + B) / 10) - 40
-62,"Catalyst Temperature: Bank 1, Sensor 2",(((256 * A) + B) / 10) - 40
-63,"Catalyst Temperature: Bank 2, Sensor 2",(((256 * A) + B) / 10) - 40
+60,Catalyst Temperature: Bank 1, Sensor 1,(((256 * A) + B) / 10) - 40
+61,Catalyst Temperature: Bank 2, Sensor 1,(((256 * A) + B) / 10) - 40
+62,Catalyst Temperature: Bank 1, Sensor 2,(((256 * A) + B) / 10) - 40
+63,Catalyst Temperature: Bank 2, Sensor 2,(((256 * A) + B) / 10) - 40
 66,Control module voltage,((256 * A) + B) / 1000
 67,Absolute load value,((256 * A) + B) / 2.55
-68,Fuel–Air commanded equivalence ratio,"(1 / 32,768) * ((256 * A) + B)"
+68,Fuel–Air commanded equivalence ratio,(1 / 32,768) * ((256 * A) + B)
 69,Relative throttle position,A / 2.55
 70,Ambient air temperature,A - 40
 71,Absolute throttle position B,A / 2.55
@@ -53,3 +53,4 @@
 97,Driver's demand engine - percent torque,A - 125
 98,Actual engine - percent torque,A - 125
 99,Engine reference torque,(256 * A) + B
+142,Engine Friction Torque %,A - 125
