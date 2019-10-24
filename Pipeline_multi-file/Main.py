@@ -12,7 +12,7 @@ for key, sample_list in samples.items():  # type: tuple, list
     for sample in sample_list:  # type: Sample
         print(current_vehicle_number)
         print("\nData import and Pre-Processing for " + sample.output_vehicle_dir)
-        id_dict, j1979_dict = sample.pre_process()
+        id_dict, j1979_dict, pid_dict = sample.pre_process()
         if j1979_dict:
             sample.plot_j1979(j1979_dict, vehicle_number=str(current_vehicle_number))
 

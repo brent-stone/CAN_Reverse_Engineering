@@ -115,8 +115,14 @@ class Sample:
     def pre_process(self):
         self.make_and_move_to_vehicle_directory()
         pre_processor = PreProcessor(self.path, pickle_arb_id_filename, pickle_j1979_filename, self.use_j1979)
+
+        self.move_back_to_parent_directory()
+        pid_dictionary = pre_processor.import_pid_dict('OBD2_pids.csv')
+        self.make_and_move_to_vehicle_directory()
+
         id_dictionary, j1979_dictionary = pre_processor.generate_arb_id_dictionary(a_timer,
                                                                                    tang_normalize_strategy,
+                                                                                   pid_dictionary,
                                                                                    time_conversion,
                                                                                    freq_analysis_accuracy,
                                                                                    freq_synchronous_threshold,
@@ -140,7 +146,7 @@ class Sample:
                     dump(j1979_dictionary, open(pickle_j1979_filename, "wb"))
                     print("\tComplete...")
         self.move_back_to_parent_directory()
-        return id_dictionary, j1979_dictionary
+        return id_dictionary, j1979_dictionary, pid_dictionary
 
     def plot_j1979(self, j1979_dictionary: dict, vehicle_number: str):
         self.make_and_move_to_vehicle_directory()
