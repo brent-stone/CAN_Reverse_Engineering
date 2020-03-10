@@ -27,7 +27,7 @@ The files are organized with an example CAN data sample and three folders. Each 
   * Make sure you read the comments about the expected folder structure!
 
 * Folder 3: **R Scripts**
-  * The R scripts require the [rEDM](https://cran.r-project.org/web/packages/rEDM/vignettes/rEDM-tutorial.html) package. Look for commands_list.txt for a sequential series of R commands.
+  * The R scripts require the [rEDM](https://CRAN.R-project.org/package=rEDM) package. Look for commands_list.txt for a sequential series of R commands. For more information about EDM, see U.C. San Diego's Sugihara Lab homepage: https://deepeco.ucsd.edu/.
 
   * The folders "city" and "home" include .csv files of engine RPM, brake pressure, and vehicle speed time series during different driving conditions. Each folder includes a "commands_list_####.txt" file for copy-paste R commands to analyze this data using the rEDM package.
 
