@@ -42,11 +42,14 @@ class PreProcessor:
 
         self.data = read_csv(filename,
                              header=None,
-                             names=['time', 'id', 'dlc', 'b0', 'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7'],
+                             names=['time', 'id', 'dlc', 'b0', 'b1',
+                                    'b2', 'b3', 'b4', 'b5', 'b6', 'b7'],
                              skiprows=7,
-                             delimiter='\t',
+                             delim_whitespace=True,
                              converters=convert_dict,
                              index_col=0)
+
+        print(self.data)
 
         a_timer.set_can_csv_to_df()
 
@@ -95,11 +98,13 @@ class PreProcessor:
                     continue
                 elif arb_id == 2024:
                     # This is the J1979 responses (ID 0x7DF & 0x8 = 0x7E8 = 2024)
-                    j1979_data = self.data.loc[self.data['id'] == arb_id].copy()
+                    j1979_data = self.data.loc[self.data['id'] == arb_id].copy(
+                    )
                     j1979_data.drop('dlc', axis=1, inplace=True)
                     j1979_data.drop('id', axis=1, inplace=True)
                     a_timer.start_nested_function_time()
-                    j1979_dictionary = self.generate_j1979_dictionary(j1979_data)
+                    j1979_dictionary = self.generate_j1979_dictionary(
+                        j1979_data)
                     a_timer.set_j1979_creation()
                 elif arb_id > 0:
                     a_timer.start_iteration_time()
@@ -110,7 +115,7 @@ class PreProcessor:
 
                     # Check if the Arbitration ID always used the same DLC. If not, ignore it.
                     # We can effectively ignore this Arb ID by not adding it to the Arb ID dictionary.
-                    if this_id.original_data['dlc'].nunique() is not 1:
+                    if this_id.original_data['dlc'].nunique() != 1:
                         continue
                     this_id.dlc = this_id.original_data['dlc'].iloc[0]
                     this_id.original_data.drop('dlc', axis=1, inplace=True)
@@ -121,14 +126,16 @@ class PreProcessor:
                     # not actually on the bus.
                     if this_id.dlc < 8:
                         for i in range(this_id.dlc, 8):
-                            this_id.original_data.drop('b' + str(i), axis=1, inplace=True)
+                            this_id.original_data.drop(
+                                'b' + str(i), axis=1, inplace=True)
 
                     # Check if there are duplicate index values and correct them.
                     if not this_id.original_data.index.is_unique:
                         correction_mask = this_id.original_data.index.duplicated()
                         this_id.original_data = this_id.original_data[~correction_mask]
 
-                    this_id.generate_binary_matrix_and_tang(a_timer, normalize_strategy)
+                    this_id.generate_binary_matrix_and_tang(
+                        a_timer, normalize_strategy)
                     this_id.analyze_transmission_frequency(time_convert=time_conversion,
                                                            ci_accuracy=freq_analysis_accuracy,
                                                            synchronous_threshold=freq_synchronous_threshold)

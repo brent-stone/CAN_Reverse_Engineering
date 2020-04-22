@@ -1,3 +1,4 @@
+import argparse
 from os import chdir, mkdir, path, remove
 from pickle import dump
 from sklearn.preprocessing import minmax_scale
@@ -8,11 +9,26 @@ from SemanticAnalysis import subset_selection, subset_correlation, greedy_signal
     j1979_signal_labeling
 from Plotter import plot_j1979, plot_signals_by_arb_id, plot_signals_by_cluster
 from PipelineTimer import PipelineTimer
+from FromCanUtilsLog import canUtilsToTSV
 
 # File names for the on-disc data input and output.
 # Input:
-can_data_filename:          str = 'drive_runway_afit.log'
-# can_data_filename:          str = 'loggerProgram0.log'
+
+# get filename from argument parser
+parser = argparse.ArgumentParser()
+parser.add_argument("filename", nargs='*', type=str,
+                    help="filename of CAN log file")
+parser.add_argument(
+    "-c", "--can-utils", help="read file in Linux can-utils format", action="store_true")
+
+args = parser.parse_args()
+
+# degault to "loggerProgram0.log" if no filename specified by args
+can_data_filename = args.filename[0] if args.filename else "loggerProgram0.log"
+
+if (args.can_utils):
+    # run converter to convert to TSV before continuing
+    can_data_filename = canUtilsToTSV(can_data_filename)
 
 # Output:
 output_folder:              str = 'output'
@@ -64,7 +80,8 @@ min_correlation_threshold:  float = 0.85
 a_timer = PipelineTimer(verbose=True)
 
 #            DATA IMPORT AND PRE-PROCESSING             #
-pre_processor = PreProcessor(can_data_filename, pickle_arb_id_filename, pickle_j1979_filename)
+pre_processor = PreProcessor(
+    can_data_filename, pickle_arb_id_filename, pickle_j1979_filename)
 id_dictionary, j1979_dictionary = pre_processor.generate_arb_id_dictionary(a_timer,
                                                                            tang_normalize_strategy,
                                                                            time_conversion,
@@ -88,7 +105,8 @@ signal_dictionary = generate_signals(a_timer,
                                      pickle_signal_filename,
                                      signal_normalize_strategy,
                                      force_lexical_analysis)
-plot_signals_by_arb_id(a_timer, id_dictionary, signal_dictionary, force_arb_id_plotting)
+plot_signals_by_arb_id(a_timer, id_dictionary,
+                       signal_dictionary, force_arb_id_plotting)
 
 #                  SEMANTIC ANALYSIS                    #
 print("\n\t\t\t##### BEGINNING SEMANTIC ANALYSIS #####")
@@ -97,7 +115,8 @@ subset_df = subset_selection(a_timer,
                              pickle_subset_filename,
                              force_semantic_analysis,
                              subset_size=subset_selection_size)
-corr_matrix_subset = subset_correlation(subset_df, csv_correlation_filename, force_semantic_analysis)
+corr_matrix_subset = subset_correlation(
+    subset_df, csv_correlation_filename, force_semantic_analysis)
 cluster_dict = greedy_signal_clustering(corr_matrix_subset,
                                         correlation_threshold=min_correlation_threshold,
                                         fuzzy_labeling=fuzzy_labeling)
@@ -116,7 +135,8 @@ signal_dictionary, j1979_correlations = j1979_signal_labeling(a_timer=a_timer,
                                                               signal_dict=signal_dictionary,
                                                               correlation_threshold=min_correlation_threshold,
                                                               force=force_signal_labeling)
-plot_signals_by_cluster(a_timer, cluster_dict, signal_dictionary, use_j1979_tags_in_plots, force_cluster_plotting)
+plot_signals_by_cluster(a_timer, cluster_dict, signal_dictionary,
+                        use_j1979_tags_in_plots, force_cluster_plotting)
 
 #                     DATA STORAGE                      #
 if dump_to_pickle:
@@ -173,7 +193,8 @@ if dump_to_pickle:
         print("\tComplete...")
     if not path.isfile(pickle_j1979_correlation):
         timer_flag += 1
-        print("\nDumping J1979 correlation DataFrame to " + pickle_j1979_correlation)
+        print("\nDumping J1979 correlation DataFrame to " +
+              pickle_j1979_correlation)
         dump(j1979_correlations, open(pickle_j1979_correlation, "wb"))
         print("\tComplete...")
     if not path.isfile(pickle_clusters_filename):
@@ -183,15 +204,17 @@ if dump_to_pickle:
         print("\tComplete...")
     if not path.isfile(pickle_all_signal_filename):
         timer_flag += 1
-        print("\nDumping complete signals DataFrame to " + pickle_all_signal_filename)
+        print("\nDumping complete signals DataFrame to " +
+              pickle_all_signal_filename)
         dump(df_full, open(pickle_all_signal_filename, "wb"))
         print("\tComplete...")
     if not path.isfile(csv_all_signals_filename):
         timer_flag += 1
-        print("\nDumping complete correlation matrix to " + csv_all_signals_filename)
+        print("\nDumping complete correlation matrix to " +
+              csv_all_signals_filename)
         corr_matrix_full.to_csv(csv_all_signals_filename)
         print("\tComplete...")
-    if timer_flag is 9:
+    if timer_flag == 9:
         print("\nDumping pipeline timer to " + pickle_timer_filename)
         dump(a_timer, open(pickle_timer_filename, "wb"))
         print("\tComplete...")
