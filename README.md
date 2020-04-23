@@ -38,14 +38,14 @@ The files are organized with an example CAN data sample and three folders. Each 
 Will Freeman added support for command line arguments and can-utils log format pre-processing.
 Usage is:
 
-# uses can-utils log format
+Example use with can-utils log format
 python Main.py -c inputFile.log
 python Main.py --can-utils inputFile.log
 
-# uses original format
+Example use with original format
 python Main.py originalFormat.log
 
-# uses ./loggerProgram0.log
+Example use with ./loggerProgram0.log
 python Main.py
   
 ## Script specific information by folder
