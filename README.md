@@ -40,6 +40,7 @@ Usage is:
 
 Example use with can-utils log format
 python Main.py -c inputFile.log
+
 python Main.py --can-utils inputFile.log
 
 Example use with original format
