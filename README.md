@@ -32,7 +32,21 @@ The files are organized with an example CAN data sample and three folders. Each 
   * The folders "city" and "home" include .csv files of engine RPM, brake pressure, and vehicle speed time series during different driving conditions. Each folder includes a "commands_list_####.txt" file for copy-paste R commands to analyze this data using the rEDM package.
 
   * .Rda files and .pdf graphical output are examples of output using the R commands and provided .csv data.
-  
+ 
+
+[APRIL 2020 UPDATE]
+Will Freeman added support for command line arguments and can-utils log format pre-processing.
+Usage is:
+
+# uses can-utils log format
+python Main.py -c inputFile.log
+python Main.py --can-utils inputFile.log
+
+# uses original format
+python Main.py originalFormat.log
+
+# uses ./loggerProgram0.log
+python Main.py
   
 ## Script specific information by folder
 ### Pipeline
