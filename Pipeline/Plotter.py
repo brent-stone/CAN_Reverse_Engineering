@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import savefig
-from numpy import where, isin
+from numpy import where, isin, ndarray
 from os import chdir, mkdir, path
 from shutil import rmtree
 from PipelineTimer import PipelineTimer
@@ -39,6 +39,10 @@ def plot_signals_by_arb_id(a_timer: PipelineTimer, arb_id_dict: dict, signal_dic
                     signals_to_plot.append(signal)
             # One row per signal plus one for the TANG
             fig, axes = plt.subplots(nrows=1 + len(signals_to_plot), ncols=1)
+            if not isinstance(axes, ndarray):
+                print("Static signal. No figures to plot")
+                continue
+
             plt.suptitle("Time Series and TANG for Arbitration ID " + hex(k_id),
                          weight='bold',
                          position=(0.5, 1))
