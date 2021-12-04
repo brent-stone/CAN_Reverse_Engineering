@@ -4,8 +4,7 @@ def canUtilsToTSV(filename):
     outFileName = filename + ".tsv"
     with open(outFileName, "w") as outFile:
         with open(filename, "r") as file:
-            linePattern = re.compile(r"\((\d+.\d+)\)\s+[^\s]+\s+([^#]+)#([0-9A-F]+)")
-            
+            linePattern = re.compile(r"\((\d+.\d+)\)\s+[^\s]+\s+([[0-9A-F#]+)#([0-9A-F]+)")
 
             while True:
                 line = file.readline()
