@@ -12,10 +12,10 @@ Special thank you to Dave Blundell, co-author of the Car Hacker's Handbook, and 
 These scripts won't run immediately when cloning this repo. Hopefully these tips will save you time and frustration saying "WHY WONT THESE THINGS WORK!?!?!" Please ask questions by posting in the [Open Garages Google group](https://groups.google.com/forum/#!forum/open-garages). These scripts were developed and tested using Python 3.6. Please make sure you have the Numpy, Pandas, & scikit-learn packages available to your Python Interpreter.
 
 
-The files are organized with an example CAN data sample and three folders. Each folder is a self-contained set of interdependent Python classes or R scripts for examining CAN data in the format shown in the example LoggerProgram0.log. Different file formats can be used by adjusting PreProcessor.py accordingly.
+The files are organized with an example CAN data sample and three folders. Each folder is a self-contained set of interdependent Python classes or R scripts for examining CAN data in the format shown in the example loggerProgram0.log. Different file formats can be used by adjusting PreProcessor.py accordingly.
 
 * Folder 1: **Pipeline**
-  * Simply copy LoggerProgram0.log into this folder and run main.py.
+  * Simply copy loggerProgram0.log into this folder and run main.py.
   * This is the most basic implementation of the pipeline described in the dissertation. Over 80% of the code is referenced from main.py. Follow the calls made in main.py to see how the data are sequentially processed and saved to disk.
   * The remaining 20% is unused portions of code which were left in place to either serve as a reference for different ways of doing things in Python or interesting experiments which were worth preserving (like the Smith-Waterman search).
 
@@ -51,7 +51,7 @@ python Main.py
   
 ## Script specific information by folder
 ### Pipeline
-**Input**: CAN data in the format demonstrated in LoggerProgram0.log
+**Input**: CAN data in the format demonstrated in loggerProgram0.log
 * **Main.py**
   1. **Purpose**: This script links and calls all remaining scripts in this folder. It handles some ‘global’ variables used for modifying the flow of data between scripts as well as any files output to the local hard disk.
 * **PreProcessor.py**
@@ -71,7 +71,7 @@ python Main.py
 
 
 ### Pipeline_multi-file
-**Input**: CAN data in the format demonstrated in LoggerProgram0.log. 
+**Input**: CAN data in the format demonstrated in loggerProgram0.log. 
 * **Main.py** and the other identically named scripts from **Pipeline** have been updated to allow the scripts to automatically import and process multiple .log files.
 * **FileBoi.py**
   1. **Purpose**: This is a series of functions which handle the logistics of searching for and reading in data from multiple .log files.
