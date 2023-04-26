@@ -83,7 +83,7 @@ def plot_signals_by_arb_id(a_timer: PipelineTimer, arb_id_dict: dict, signal_dic
 
             # If you want transparent backgrounds, a different file format, etc. then change these settings accordingly.
             savefig(hex(arb_id.id) + "." + figure_format,
-                    bbox_iches='tight',
+                    bbox_inches='tight',
                     pad_inches=0.0,
                     dpi=figure_dpi,
                     format=figure_format,
